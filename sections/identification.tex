@@ -1,0 +1,96 @@
+\subsection{Identification}
+To identify the ATT, we take an approach inspired by He et al. (2020). Our approach is as follows:
+
+\begin{enumerate}
+    \item Construct a matched cohort of individuals who contacted the Call Center and initiated SSVF within 30 days, and individuals who contacted the Call Center but did not initiate SSVF within 30 days. We match on baseline covariates and pre-treatment housing status.
+    \item For each matched pair, define the time of SSVF initiation as the index date for both individuals. We then follow both individuals for 90 days after the index date and compare their housing outcomes.
+    \item Because housing status is only observed at certain times, we stratify patients at follow-up based on post-treatment variables that determine their observation process.
+    \item We estimate the difference in housing outcomes at 90 days between treated and control patients within each stratum, and take a weighted average of these differences across strata to estimate the ATT.
+\end{enumerate}
+
+\subsubsection{Matching}
+To construct the matched cohort, we first estimate a propensity score for SSVF initiation using logistic regression within strata defined by baseline housing status and prior VA utilization. Each time a patient initiates SSVF, we match them to a patient who has not yet initiated SSVF. We use a combination of exact matching and propensity score matching. Exact matching is done based on fiscal year, baseline housing status, and prior VA utilization.
+
+For each matched pair, we define the index date $s$ as the time of SSVF initiation for the treated patient, and set $\tau = s + 90$ as the end of follow-up. We then follow both patients for 90 days and compare their housing outcomes at $\tau$.
+
+\subsubsection{Determining housing status at follow-up}
+
+Partition patients into strata defined by their vital status and program enrollment at follow-up time $\tau$. Let $C=C(\boldsymbol{L}, \overline{\boldsymbol{X}}(\tau), D(\tau))$ denote stratum membership:
+
+\begin{itemize}
+    \item $C=0$: Deceased ($D(\tau)=1$)
+    \item $C=1$: Enrolled in GPD ($D(\tau)=0$, $X_3(\tau)=1$)
+    \item $C=2$: Enrolled in HUD-VASH but not living in HUD-VASH housing, not enrolled in GPD ($D(\tau)=0$, $X_1(\tau)=1$, $X_2(\tau)=0$, $X_3(\tau)=0$)
+    \item $C=3$: Living in HUD-VASH housing ($D(\tau)=0$, $X_2(\tau)=1$)
+    \item $C=4$: Not enrolled in any VA homeless program at $\tau$, but enrolled in and exited a VA homeless program between time zero and $\tau$
+    \item $C=5$: Never enrolled in any VA homeless program between time zero and $\tau$
+\end{itemize}
+
+For strata $C \in \{0, 1, 2\}$, the primary outcome is determined directly from stratum membership: patients are either deceased, in sheltered homelessness (GPD), or in HUD-VASH without housing, so $H(\tau) \neq 3$ and $Y = 0$. For strata $C \in \{3, 4, 5\}$, $Y$ must be estimated from manifest variables observed near follow-up time.
+
+Define $t^* = \min\{t \in [\tau-30,\, \tau] : D(t)=0,\; \boldsymbol{X}(t)=\boldsymbol{X}(\tau)\}$ as the start of the pre-outcome observation window, i.e.\ the earliest day within 30 days of $\tau$ on which the patient is alive and in the same program enrollment state as at $\tau$.
+
+We make the following assumptions about the observation process during each day $t$ in the pre-outcome observation window $[t^*, \tau]$.
+
+\paragraph{Stability of housing status.} Housing status does not change during the pre-outcome observation window:
+\begin{align*}
+    H(t) = H(\tau) \quad \text{for all } t \in [t^*, \tau]
+\end{align*}
+
+\paragraph{Ignorability of the visit process.} Within each stratum, the visit process is independent of treatment and covariate history, conditional on current housing status and program enrollment:
+\begin{align*}
+    \boldsymbol{V}(t) \perp A, T^A, Z\cdot\mathbf{1}(T^Z>t), \boldsymbol{L},  \overline{\boldsymbol{X}}(t-) \mid H(t), C, \boldsymbol{X}(t) \quad \text{for all } t \in [t^*, \tau]
+\end{align*}
+
+\paragraph{Ignorability of the measurement process.} Within each stratum and visit setting, the manifest variables are independent of treatment and covariate history, conditional on current housing status and program enrollment:
+\begin{align*}
+    \boldsymbol{M}^{v}(t) \perp A, T^A, Z\cdot\mathbf{1}(T^Z>t), \boldsymbol{L},  \overline{\boldsymbol{X}}(t-) \mid H(t), C, \boldsymbol{X}(t), V(t)=v \\
+    \text{for all } t \in [t^*, \tau],\; v \in \{1, 2, 3\}
+\end{align*}
+
+\subsection{Identification of the mean potential outcomes}
+
+\subsubsection{Treated group}
+
+Starting with the treated group, the mean potential outcome under treatment can be written as:
+
+\begin{align*}
+    E[Y^1(s)\mid T^A=s]
+    &= \sum_{c} E[Y^1(s)\mid T^A=s,\, C=c]\, P(C=c\mid T^A=s) \\
+    &= \sum_{c} E[Y\mid T^A=s,\, C=c]\, P(C=c\mid T^A=s)
+\end{align*}
+
+where the second equality follows from consistency. Since $P(C=c\mid T^A=s)$ is identified directly from observed data, it remains to identify $E[Y\mid T^A=s, C=c]$ within each stratum. For $c \in \{0,1,2\}$, stratum membership implies $H(\tau)\neq 3$, so $E[Y\mid T^A=s, C=c]=0$. Therefore:
+
+\begin{align*}
+    E[Y^1(s)\mid T^A=s]
+    = \sum_{c=3}^{5} P[H(\tau)=3\mid T^A=s,\, C=c]\; P(C=c\mid T^A=s)
+\end{align*}
+
+Under the pre-outcome observation window assumptions, each conditional probability $P[H(\tau)=3\mid T^A=s, C=c]$ for $c\in\{3,4,5\}$ is identified from the manifest variables observed in $[t^*,\tau]$:
+
+\begin{align*}
+    P[H(\tau)=3\mid T^A=s,\, C=c]
+    = E\!\left[\mathbf{1}[H(\tau)=3] \;\Big|\; T^A=s,\, C=c,\, \overline{\boldsymbol{V}}(\tau),\, \overline{\boldsymbol{M}}(\tau)\right]
+\end{align*}
+
+\subsubsection{Control group}
+
+For the matched control patient assigned index date $s$, the mean potential outcome under no treatment is:
+
+\begin{align*}
+    E[Y^0(s)\mid T^A=s]
+    &= \sum_{c} E[Y^0(s)\mid T^A=s,\, C=c]\, P(C=c\mid T^A=s) \\
+    &= \sum_{c} E[Y^0(s)\mid \boldsymbol{L},\, \boldsymbol{X}(0),\, H(0),\, C=c]\, P(C=c\mid T^A=s) \\
+    &= \sum_{c} E[Y\mid A=0,\, \boldsymbol{L},\, \boldsymbol{X}(0),\, H(0),\, C=c]\, P(C=c\mid T^A=s)
+\end{align*}
+
+where the second equality follows from conditional exchangeability (potential outcomes are independent of treatment initiation conditional on baseline covariates), and the third follows from consistency. The matching procedure ensures that the distribution of $(\boldsymbol{L}, \boldsymbol{X}(0), H(0))$ is balanced between treated and matched controls, so we can estimate this expectation from the matched control group. As with the treated group, strata $c\in\{0,1,2\}$ contribute zero. Therefore:
+
+\begin{align*}
+    E[Y^0(s)\mid T^A=s]
+    = \sum_{c=3}^{5} P[H(\tau)=3\mid A=0,\, C=c]\; P(C=c\mid T^A=s)
+\end{align*}
+
+where $P[H(\tau)=3\mid A=0, C=c]$ is identified from the manifest variables of matched controls in $[t^*,\tau]$ under the same pre-outcome observation window assumptions.
+

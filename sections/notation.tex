@@ -1,0 +1,104 @@
+
+\subsection{Notation}
+\paragraph{Time and baseline variables.} Let $t=0, 1, 2, \ldots$ index the days since Call Center contact.
+
+Baseline covariates measured at time zero are denoted by $\boldsymbol{L}$.
+
+\paragraph{Treatment.} 
+The treatment is initiating SSVF within 30 days of Call Center contact. For $t\geq 0, t\leq 30$, let $T^A$ denote the time an individual initiated SSVF and define $A(t) = \mathbf{1}[T^A \leq t]$ as the treatment status at time $t$.
+
+For patients who initiate SSVF and for $t \geq T^A$, define $T^Z$ as the day of SSVF exit and define $Z=2$ if the patient has exited SSVF to independent housing, $Z=1$ if they have exited to sheltered homelessness, and $Z=0$ if they have exited SSVF to unsheltered homelessness. For patients who do not initiate SSVF, define $Z=0$. 
+
+\paragraph{Time-varying variables.} A patient's housing status is represented by an ordinal variable $H(t) \in \{0, 1, 2, 3\}$, where:
+\begin{itemize}
+    \item $H(t)=0$: Unsheltered homeless
+    \item $H(t)=1$: Sheltered homeless
+    \item $H(t)=2$: Housed with risk of homelessness
+    \item $H(t)=3$: Stably housed
+\end{itemize}
+
+At baseline, no patients are stably housed: $P[H(0)=3] = 0$.
+
+
+Mortality is represented by $D(t)=1$ if they have died by time $t$ and $D(t)=0$ otherwise. If $D(t)=1$, then $H(t)$ is defined to be $0$. Define $T^D$ as the time of death.
+
+Let $\boldsymbol{X}(t)$ represent time-varying covariates that include:
+\begin{itemize}
+    \item $X_1(t)$: An indicator that the Veteran is enrolled in HUD-VASH
+    \item $X_2(t)$: An indicator that the Veteran is enrolled in HUD-VASH and living in HUD-VASH housing
+    \item $X_3(t)$: An indicator that the Veteran is enrolled in GPD (Grant and Per Diem) or other VA homeless programs
+    \item $X_4(t)$: The individual's VA enrollment status (enrolled in VA healthcare or not)
+\end{itemize}
+
+
+\paragraph{Healthcare visits.} Let $V(t) \in \{0, 1, 2, 3\}$ represent healthcare visits at time $t$, where:
+\begin{itemize}
+    \item $V(t)=0$: No visit
+    \item $V(t)=1$: Visit with homeless clinic staff
+    \item $V(t)=2$: Visit with HUD-VASH staff
+    \item $V(t)=3$: Visit with other healthcare providers
+\end{itemize}
+
+\paragraph{Manifest variables.} Each healthcare visit at time $t$ in setting $v$ is associated with a vector of manifest variables $\boldsymbol{M}^{v}(t)$. This includes housing-related information extracted from ICD-10 codes, clinical notes, and structured assessment data.
+
+\paragraph{History notation.} For an arbitrary stochastic process $W$, we denote:
+\begin{itemize}
+    \item $\overline{W}(t) = \{W(u) : 0 \leq u \leq t\}$: history of $W$ through time $t$ (inclusive)
+    \item $\overline{W}(t-) = \{W(u) : 0 \leq u < t\}$: history of $W$ prior to time $t$ (exclusive)
+    \item $W_j = W(T_j)$: value of $W$ at the time of the $j$-th event
+\end{itemize}
+
+
+\subsection{Potential outcomes and Causal Estimand}
+
+Consider a subject who initiates SSVF at time $s$. We define their follow-up time $\tau$ as 90 days after SSVF entry: $\tau=s+90$. For each post-treatment variable $W(t)$ at times $t=s+1, s+2, \ldots, \tau$ we define a corresponding potential outcome under treatment $a \in \{0,1\}$, written as $W^a(t, s)$ that represents the value of $W(t)$ that would be observed if the subject had initiated SSVF at time $s$ (if $a=1$) or had not initiated SSVF at any time between time zero and time $s$ (if $a=0$). For example, $H^1(t, s)$ represents the potential housing status at time $t$ if the subject had initiated SSVF at time $s$, while $H^0(t, s)$ represents the potential housing status at time $t$ if the subject had remained not enrolled in SSVF between time $s$ and $t$.
+
+ To describe the effect of SSVF on housing, we define a composite potential outcome as $Y^a(s) = \mathbf{1}[H^a(\tau, s)=3] \cdot (1-D^a(\tau, s))$. That is, the outcome is an indicator of being alive and stably housed 90 days after SSVF initiation. 
+
+The estimand is the Average Treatment Effect among the Treated (ATT) of initiating SSVF on the primary outcome:
+\begin{align*}
+    \delta(s) &= E[Y^1(s) - Y^0(s)|T^A=s]
+\end{align*}
+
+We assume that $\delta(s)$ is constant across $s$ and write $\delta = \delta(s)$ for all $s$.
+
+\subsection{Assumptions}
+\subsubsection{Causal identification}
+
+We make the following standard causal inference assumptions.
+
+\paragraph{Conditional exchangeability.}  First, we assume that, conditional on baseline covariates and baseline housing status, potential outcomes are independent of treatment initation during the grace period: 
+\begin{align*}
+    Y^1(s), Y^0(s) \perp A(s) \mid H(0), \boldsymbol{L}, \boldsymbol{X}(0) \quad \text{for all } s \in [0, 30]
+\end{align*}
+
+
+
+\paragraph{Consistency.}
+\begin{align*}
+    Y^a(s) &= Y \quad \text{if } A=a \text{ and } T^A=s
+\end{align*}
+
+\paragraph{Positivity.}
+\begin{align*}
+    0 < P(A(s)=1 \mid H(0), \boldsymbol{L}, \boldsymbol{X}(0)) < 1 \quad \text{for all } H(0), \boldsymbol{L}, \boldsymbol{X}(0) \text{ and } s \in [0, 30]
+\end{align*}
+
+
+\paragraph{Observed housing status}
+Housing status may be fully, partially, or not observed at time $t$ depending on the patient's vital status, program enrollment status, and healthcare visits at time $t$. By fully observed we mean that we can determine the exact value of $H(t)$. By partially observed, we mean that we can determine whether the patient's housing status falls into a certain subset of the four categories, but we cannot determine the exact value of $H(t)$. By not observed, we mean that we cannot directly determine anything about $H(t)$.
+
+We assume that housing status is fully observed in four settings. First, for all patients at $t=0$ (time of Call Center contact) through the Center's assessment. Second, at the time of death, since $H(t)$ is defined to be $0$ if $D(t)=1$. Third, when a patient is enrolled in GPD, since patients in GPD are considered to be in sheltered homelessness. Fourth, when a patient enters SSVF.
+
+Housing status is partially observed for patients living in HUD-VASH housing. For these patients, we can determine whether they are housed or not, but we cannot determine their risk status.
+
+For patients enrolled in HUD-VASH who are in the process of obtaining HUD-VASH housing, we can determine that they are not stably housed, but we cannot determine whether they are housed with risk of homelessness or homeless during the housing search. 
+
+For patients who enrolled in SSVF and exited SSVF prior to follow-up, we can determine whether they exit to unsheltered homelessness, sheltered homelessness, or independent housing, but for the third group we cannot determine whether they are housed with risk of homelessness or stably housed.
+
+Note that stable housing is never directly observed for any patient, since we cannot determine whether a patient is housed with risk of homelessness or stably housed. We can only determine whether a patient is not stably housed (i.e.\ unsheltered homeless, sheltered homeless, or housed with risk of homelessness) or is potentially stably housed (i.e.\ living in HUD-VASH housing or exited SSVF to independent housing).
+
+Define indicators $O_H(t)$ for whether housing status is observed at time $t$ and $O_Y$ for whether the primary outcome $Y$ is observed at time $t$.
+The observation process for $Y$ is less restrictive than housing since we can determine whether $Y=0$ if we know the patient is deceased or not stably housed, even if we don't know their exact housing status.
+
+
