@@ -85,12 +85,13 @@ We make the following standard causal inference assumptions.
 \end{align*}
 
 
-\paragraph{Observed housing status}
+\subsubsection{Observed housing status}
 Housing status may be fully, partially, or not observed at time $t$ depending on the patient's vital status, program enrollment status, and healthcare visits at time $t$. By fully observed we mean that we can determine the exact value of $H(t)$. By partially observed, we mean that we can determine whether the patient's housing status falls into a certain subset of the four categories, but we cannot determine the exact value of $H(t)$. By not observed, we mean that we cannot directly determine anything about $H(t)$.
 
-We assume that housing status is fully observed in four settings. First, for all patients at $t=0$ (time of Call Center contact) through the Center's assessment. Second, at the time of death, since $H(t)$ is defined to be $0$ if $D(t)=1$. Third, when a patient is enrolled in GPD, since patients in GPD are considered to be in sheltered homelessness. Fourth, when a patient enters SSVF.
+\paragraph{Direct observations of housing.} We assume that housing status is fully observed in four settings. First, for all patients at $t=0$ (time of Call Center contact) through the Center's assessment. Second, at the time of death, since $H(t)$ is defined to be $0$ if $D(t)=1$. Third, when a patient is enrolled in GPD, since patients in GPD are considered to be in sheltered homelessness. Fourth, when a patient enters SSVF.
 
-Housing status is partially observed for patients living in HUD-VASH housing. For these patients, we can determine whether they are housed or not, but we cannot determine their risk status.
+\paragraph{Partial observations of housing.}
+Housing status is partially observed for patients living in HUD-VASH housing. For these patients, they are known to be housed, but we cannot determine their risk status.
 
 For patients enrolled in HUD-VASH who are in the process of obtaining HUD-VASH housing, we can determine that they are not stably housed, but we cannot determine whether they are housed with risk of homelessness or homeless during the housing search. 
 
@@ -98,7 +99,7 @@ For patients who enrolled in SSVF and exited SSVF prior to follow-up, we can det
 
 Note that stable housing is never directly observed for any patient, since we cannot determine whether a patient is housed with risk of homelessness or stably housed. We can only determine whether a patient is not stably housed (i.e.\ unsheltered homeless, sheltered homeless, or housed with risk of homelessness) or is potentially stably housed (i.e.\ living in HUD-VASH housing or exited SSVF to independent housing).
 
-Define indicators $O_H(t)$ for whether housing status is observed at time $t$ and $O_Y$ for whether the primary outcome $Y$ is observed at time $t$.
+Define indicators $H^{\text{obs}}(t)$ for whether housing status is observed at time $t$ and $Y^{\text{obs}}$ for whether the primary outcome $Y$ is observed at follow-up.
 The observation process for $Y$ is less restrictive than housing since we can determine whether $Y=0$ if we know the patient is deceased or not stably housed, even if we don't know their exact housing status.
 
 
