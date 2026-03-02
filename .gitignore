@@ -1,0 +1,29 @@
+# LaTeX build artifacts
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+*.lof
+*.lot
+*.bbl
+*.blg
+*.idx
+*.ind
+*.ilg
+*.nlo
+*.nls
+*.glo
+*.gls
+*.glg
+*.acn
+*.acr
+*.alg
+*.xdy
+*.run.xml
+*-blx.bib
+
+# Compiled output (root-level only; reference PDFs in subdirectories are kept)
+/*.pdf
