@@ -7,9 +7,13 @@ Baseline covariates measured at time zero are denoted by $\boldsymbol{L}$.
 \paragraph{Treatment.} 
 The treatment is initiating SSVF within 30 days of Call Center contact. For $t\geq 0, t\leq 30$, let $T^A$ denote the time an individual initiated SSVF and define $A(t) = \mathbf{1}[T^A \leq t]$ as the treatment status at time $t$.
 
+\paragraph{Time-varying variables.} 
+
 For patients who initiate SSVF and for $t \geq T^A$, define $T^Z$ as the day of SSVF exit and define $Z=2$ if the patient has exited SSVF to independent housing, $Z=1$ if they have exited to sheltered homelessness, and $Z=0$ if they have exited SSVF to unsheltered homelessness. For patients who do not initiate SSVF, define $Z=0$. 
 
-\paragraph{Time-varying variables.} A patient's housing status is represented by an ordinal variable $H(t) \in \{0, 1, 2, 3\}$, where:
+
+
+A patient's housing status is represented by an ordinal variable $H(t) \in \{0, 1, 2, 3\}$, where:
 \begin{itemize}
     \item $H(t)=0$: Unsheltered homeless
     \item $H(t)=1$: Sheltered homeless
@@ -45,7 +49,6 @@ Let $\boldsymbol{X}(t)$ represent time-varying covariates that include:
 \begin{itemize}
     \item $\overline{W}(t) = \{W(u) : 0 \leq u \leq t\}$: history of $W$ through time $t$ (inclusive)
     \item $\overline{W}(t-) = \{W(u) : 0 \leq u < t\}$: history of $W$ prior to time $t$ (exclusive)
-    \item $W_j = W(T_j)$: value of $W$ at the time of the $j$-th event
 \end{itemize}
 
 
@@ -60,7 +63,11 @@ The estimand is the Average Treatment Effect among the Treated (ATT) of initiati
     \delta(s) &= E[Y^1(s) - Y^0(s)|T^A=s]
 \end{align*}
 
-We assume that $\delta(s)$ is constant across $s$ and write $\delta = \delta(s)$ for all $s$.
+\begin{align*}
+    \delta &= \sum_s^{30} E[Y^1(s) - Y^0(s)|T^A=s, A(30)=1] P[T^A=s|A(30)=1] \\
+    &= E[Y^1(T^A) - Y^0(T^A)|A(30)=1]
+\end{align*}
+
 
 \subsection{Assumptions}
 \subsubsection{Causal identification}
