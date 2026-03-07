@@ -11,6 +11,6 @@ Patients are eligible to be included in the datset
     \item Was not enrolled in any VA homeless program at the time of their initial Call Center contact.
 \end{enumerate}
 
-\paragraph{Treatment strategies.} Upon trial enrollment, participants would be randomly assigned to one of two arms: \textit{SSVF} or \textit{No SSVF}. Participants in the \textit{SSVF} arm would be instructed to enroll in SSVF within 30 days of their Call Center contact, while participants in the No SSVF arm would be instructed to not enroll in SSVF for at least 30 days.
+\paragraph{Treatment strategies.} Upon trial enrollment, participants would be randomly assigned to one of two arms: \textit{SSVF} or \textit{No SSVF}. Participants in the \textit{SSVF} arm would be instructed to enroll in SSVF within 30 days of their Call Center contact (the grace period). We define $\Delta_A = \mathbf{1}[T_A \leq 30]$ as the indicator that a participant initiated SSVF within the grace period.
 
-\paragraph{Follow-up.} Participants would be followed for 90 days after treatment initiation. At that time, their vital status and housing status would be assessed. The primary outcome would be being alive and stably housed 90 days after treatment initiation.
+\paragraph{Follow-up.} Participants would be followed for 120 days after treatment initiation. The primary outcome is a composite indicator of being alive and housed at 120 days after SSVF initiation: $Y(T_A + 120) = (1 - D(T_A + 120)) \cdot H(T_A + 120)$.
