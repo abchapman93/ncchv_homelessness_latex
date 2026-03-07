@@ -60,20 +60,23 @@ For an arbitrary process $W$:
 \subsection{Outcome, potential outcomes, and estimand}
 
 \paragraph{Composite outcome.}
-The primary outcome at time $t$ is $Y(t) = (1 - D(t)) \cdot H(t)$, an indicator of being alive and housed. The follow-up time is $\tau = T_A + 120$.
+The primary outcome at time $t$ is $Y(t) = (1 - D(t)) \cdot H(t)$, an indicator of being alive and housed. Follow-up is assessed at $T_A + 120$ days after Call Center contact.
+
+\paragraph{Treatment histories.}
+Define $\bar{a}_t = (a_0, a_1, \ldots, a_t)$ as the treatment history through day $t$. Since $A(t)$ is absorbing, initiating SSVF on day $s$ corresponds to the treatment history $\bar{1}_s = (0, \ldots, 0, 1, \ldots, 1)$ with the switch from 0 to 1 at position $s$. The no-treatment history is $\bar{0} = (0, \ldots, 0)$. For notational convenience, define $\bar{0}_s \equiv \bar{0}$ for all $s$, $0 \leq s \leq 30$.
 
 \paragraph{Potential outcomes.}
-For a subject alive at time $s$, define potential outcomes under treatment regime $a \in \{0, 1\}$:
+Define potential outcomes indexed by treatment history:
 \begin{itemize}
-    \item $D^a(t, s)$: Indicator of having died by day $t$
-    \item $B^a(t, s)$: Data recorded on day $t$
-    \item $H^a(t, s)$: Housing status at day $t$ (defined only if $D^a(t, s) = 0$)
-    \item $Y^a(t, s) = (1 - D^a(t, s)) \cdot H^a(t, s)$: Composite outcome at day $t$
+    \item $D^{\bar{1}_s}(t)$, $D^{\bar{0}}(t)$: Indicator of having died by day $t$
+    \item $B^{\bar{1}_s}(t)$, $B^{\bar{0}}(t)$: Data recorded on day $t$
+    \item $H^{\bar{1}_s}(t)$, $H^{\bar{0}}(t)$: Housing status at day $t$ (defined only when the corresponding $D = 0$)
+    \item $Y^{\bar{1}_s}(t) = (1 - D^{\bar{1}_s}(t)) \cdot H^{\bar{1}_s}(t)$: Composite outcome at day $t$
 \end{itemize}
-Here $a = 1$ denotes SSVF initiation at time $s$ and $a = 0$ denotes no SSVF. The index $s$ encodes that the patient is alive and eligible at day $s$ and sets the time origin for follow-up. Under consistency, $Y^1(t, T_A) = Y(t)$ for treated patients.
+Under consistency, $Y^{\bar{1}_{T_A}}(t) = Y(t)$ for treated patients.
 
 \paragraph{Estimand.}
 The estimand is the average treatment effect among the treated (ATT):
 \begin{align*}
-    \delta = E\!\left[Y^1(T_A + 120,\, T_A) - Y^0(T_A + 120,\, T_A) \mid \Delta_A = 1\right]
+    \delta = E\!\left[Y(T_A + 120) - Y^{\bar{0}}(T_A + 120) \mid \Delta_A = 1\right]
 \end{align*}
