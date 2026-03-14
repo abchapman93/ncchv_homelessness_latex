@@ -58,23 +58,28 @@ Table~\ref{tab:bt} summarizes the elements of $B(t)$ and their availability by v
 \centering
 \caption{Elements of $B(t)$ available by visit type $V(t)$. Structural components ($D$, $A$, $Z$, $\boldsymbol{X}$) are always recorded. Manifest variables $\boldsymbol{M}(t)$ are observed only at visit types 1--5.}
 \label{tab:bt}
-\small
-\begin{tabular}{llcccccc}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\begin{tabular}{p{4.6cm}cccccc}
 \toprule
-& & \multicolumn{6}{c}{Visit type $V(t)$} \\
-\cmidrule(lr){3-8}
-Component & Element & None & Homeless & HUD-VASH & Risk & MH/SUD & Other \\
-& & (0) & (1) & (2) & (3) & (4--5) & (6) \\
+& \multicolumn{6}{c}{Visit type $V(t)$} \\
+\cmidrule(lr){2-7}
+Element & None & Homeless & HUD-VASH & Risk & MH/SUD & Other \\
+& (0) & (1) & (2) & (3) & (4--5) & (6) \\
 \midrule
-\multicolumn{8}{l}{\textit{Structural (always recorded)}} \\
-& $D(t)$ & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
-& $A(t),\, Z(t)$ & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
-& $\boldsymbol{X}(t)$ & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+\multicolumn{7}{l}{\textit{Structural (always recorded)}} \\
+\quad $D(t)$ & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+\quad $A(t),\, Z(t)$ & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+\quad $\boldsymbol{X}(t)$ & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
 \midrule
-\multicolumn{8}{l}{\textit{Manifest variables $\boldsymbol{M}(t)$}} \\
-& $M_1(t)$: ICD-10 code & & \checkmark & \checkmark & \checkmark & \checkmark & \\
-& $\boldsymbol{M}_2(t)$: note classifications & & \checkmark & \checkmark & \checkmark & \checkmark & \\
-& $\boldsymbol{M}_3(t)$: NLP entity spans & & \checkmark & \checkmark & \checkmark & \checkmark & \\
+\multicolumn{7}{l}{\textit{Manifest variables $\boldsymbol{M}(t)$}} \\
+\quad $M_1(t)$: ICD-10 code & & & & & & \\
+\qquad Granular: absent, risk, homeless, sheltered, unsheltered & & \checkmark & \checkmark & & & \\
+\qquad Coarse: absent, homeless & & & & \checkmark & \checkmark & \\
+\quad $\boldsymbol{M}_2(t)$: note classifications & & & & & & \\
+\qquad $M_{2,1}$: stable, $M_{2,2}$: unstable, $M_{2,3}$: unknown & & \checkmark & \checkmark & \checkmark & \checkmark & \\
+\quad $\boldsymbol{M}_3(t)$: NLP entity spans & & & & & & \\
+\qquad $M_{3,1}$: homeless, $M_{3,2}$: need, $M_{3,3}$: housed & & \checkmark & \checkmark & \checkmark & \checkmark & \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -109,6 +114,3 @@ The estimand is the average treatment effect among the treated (ATT):
 \begin{align*}
     \delta = E\!\left[Y(T_A + 120) - Y^{\bar{0}}(T_A + 120) \mid \Delta_A = 1\right]
 \end{align*}
-
-
-Testing.
