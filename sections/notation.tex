@@ -11,7 +11,7 @@ Let $D(t) = 1$ if the patient has died by day $t$ and $D(t) = 0$ otherwise. Mort
 Let $T_A = \min_s \{s : A(s) = 1\}$ denote the time of SSVF initiation. Define $A(t) = \mathbf{1}[T_A \leq t]$ as the indicator of having initiated SSVF at or by day $t$; once $A(t) = 1$, it remains 1 (absorbing). The grace period treatment indicator is $\Delta_A = \mathbf{1}[T_A \leq 30]$.
 
 \paragraph{Housing status.}
-A patient's housing status $H(t)$ is represented by $H(t) = 1$ if housed and $H(t) = 0$ if homeless. If $D(t)=1$, then $H(t)$ is undefined. Housing status is observed at baseline ($t = 0$) through the Call Center assessment, at SSVF entry ($t = T_A$), and when the patient is enrolled in certain VA homeless programs. 
+A patient's housing status $H(t)$ is represented by $H(t) = 1$ if housed and $H(t) = 0$ if homeless. If $D(t)=1$, then $H(t)$ is undefined. 
 
 \paragraph{SSVF exit.}
 Let $Z(t) = 1$ if the patient has initiated and exited SSVF by day $t$, and $Z(t) = 0$ otherwise. $Z(t)$ is binary and absorbing; $Z(t) = 1$ implies $A(t) = 1$. Let $T^Z$ denote the day of SSVF exit. The exit destination is captured by $H(T^Z)$, which is assumed observed.
@@ -37,17 +37,20 @@ Let $V(t)$ represent the visit type at time $t$:
     \item $V(t) = 6$: Other visits (primary care, emergency, etc.)
 \end{itemize}
 
-Define $B(t) = \{D(t),\, A(t),\, Z(t),\, \boldsymbol{X}(t),\, V(t),\, \boldsymbol{M}(t)\}$ as the data recorded on day $t$.
-
 \paragraph{Manifest variables.}
 When $V(t) \in \{1, \ldots, 5\}$, a vector of manifest variables $\boldsymbol{M}(t) = (M_1(t),\, \boldsymbol{M}_2(t),\, \boldsymbol{M}_3(t))$ is observed. For $V(t) = 0$ or $V(t) = 6$, $\boldsymbol{M}(t) = \emptyset$. The manifest variables contain noisy indicators of housing status extracted from ICD-10 codes and clinical notes:
 \begin{itemize}
     \item $M_1(t) \in \{0, 1, 2, 3, 4\}$: ICD-10 housing code, where $0 = \text{absent}$, $1 = \text{risk}$, $2 = \text{homeless unspecified}$, $3 = \text{sheltered}$, $4 = \text{unsheltered}$. At visit types where granular coding is not available, $M_1(t) \in \{0, 2\}$.
-    \item $\boldsymbol{M}_2(t) = [M_{2,1}(t),\, M_{2,2}(t),\, M_{2,3}(t)]$: Counts of clinical notes classified as stably housed, unstably housed, and unknown, respectively, with $M_{2,1}(t) + M_{2,2}(t) + M_{2,3}(t)$ equal to the total number of notes at the visit.
-    \item $\boldsymbol{M}_3(t) = [M_{3,1}(t),\, M_{3,2}(t),\, M_{3,3}(t)]$: Counts of homeless, housing need, and housed entity spans identified across clinical notes by NLP.
+    \item $\boldsymbol{M}_2(t) = [M_{2,1}(t),\, M_{2,2}(t),\, M_{2,3}(t)]$: Counts of clinical notes classified as stably housed, unstably housed, and unknown, respectively.
+    \item $\boldsymbol{M}_3(t) = [M_{3,1}(t),\, M_{3,2}(t),\, M_{3,3}(t)]$: Counts of text spans extracted by NLP across clinical notes indicating homelessness, housing need, and stable housing.
 \end{itemize}
 
-Housing status is also directly observed on certain occasions through the structural components of $B(t)$: at baseline ($t = 0$) through the Call Center assessment, at SSVF entry ($t = T_A$), at SSVF exit ($t = T^Z$), when $X_3(t) = 1$ (GPD enrollment implies $H(t) = 0$), and when $X_2(t) = 1$ (HUD-VASH housing implies $H(t) = 1$).
+Define $B(t) = \{D(t),\, A(t),\, Z(t),\, \boldsymbol{X}(t),\, V(t),\, \boldsymbol{M}(t)\}$ as the data recorded on day $t$.
+
+
+\paragraph{Direct observations of housing status} Housing status is directly observed on certain occasions through the structural components of $B(t)$: at baseline ($t = 0$) through the Call Center assessment, at SSVF entry ($t = T_A$), at SSVF exit ($t = T^Z$), when $X_3(t) = 1$ (GPD enrollment implies $H(t) = 0$), and when $X_2(t) = 1$ (HUD-VASH housing implies $H(t) = 1$).
+
+
 
 Table~\ref{tab:bt} summarizes the elements of $B(t)$ and their availability by visit type.
 
