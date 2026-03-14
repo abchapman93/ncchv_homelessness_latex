@@ -8,8 +8,8 @@
 %   2. Observed housing status (direct/partial observations, H^obs, Y^obs)
 %   3. Follow-up strata (C = 0,...,5)
 %
-% NOTE: Some notation here uses the OLD conventions (ordinal H(t), 90-day
-% follow-up, A(30), M^v(t)). Will need updating before reuse.
+% Updated 2026-03-14: Notation updated to match current conventions
+% (binary H(t), treatment histories bar{a}, 120-day follow-up, Delta_A).
 % =============================================================================
 
 \subsection{Assumptions}
@@ -17,40 +17,38 @@
 
 We make the following standard causal inference assumptions.
 
-\paragraph{Conditional exchangeability.}  First, we assume that, conditional on baseline covariates and baseline housing status, potential outcomes are independent of treatment initation during the grace period:
+\paragraph{Conditional exchangeability.}  First, we assume that, conditional on baseline covariates and baseline housing status, potential outcomes are independent of treatment initiation during the grace period:
 \begin{align*}
-    Y^1(s), Y^0(s) \perp A(s) \mid H(0), \boldsymbol{L}, \boldsymbol{X}(0) \quad \text{for all } s \in [0, 30]
+    Y^{\bar{1}_s}(T_A + 120), Y^{\bar{0}}(T_A + 120) \perp \Delta_A \mid H(0), \boldsymbol{L}, \boldsymbol{X}(0) \quad \text{for all } s \in [0, 30]
 \end{align*}
 
 
 
 \paragraph{Consistency.}
 \begin{align*}
-    Y^a(s) &= Y \quad \text{if } A=a \text{ and } T^A=s
+    Y^{\bar{1}_{T_A}}(t) &= Y(t) \quad \text{if } \Delta_A = 1
 \end{align*}
 
 \paragraph{Positivity.}
 \begin{align*}
-    0 < P(A(s)=1 \mid H(0), \boldsymbol{L}, \boldsymbol{X}(0)) < 1 \quad \text{for all } H(0), \boldsymbol{L}, \boldsymbol{X}(0) \text{ and } s \in [0, 30]
+    0 < P(\Delta_A=1 \mid H(0), \boldsymbol{L}, \boldsymbol{X}(0)) < 1 \quad \text{for all } H(0), \boldsymbol{L}, \boldsymbol{X}(0)
 \end{align*}
 
 
 \subsubsection{Observed housing status}
-Housing status may be fully, partially, or not observed at time $t$ depending on the patient's vital status, program enrollment status, and healthcare visits at time $t$. By fully observed we mean that we can determine the exact value of $H(t)$. By partially observed, we mean that we can determine whether the patient's housing status falls into a certain subset of the four categories, but we cannot determine the exact value of $H(t)$. By not observed, we mean that we cannot directly determine anything about $H(t)$.
+Housing status may be fully or partially observed at time $t$ depending on the patient's vital status, program enrollment status, and healthcare visits at time $t$. By fully observed we mean that we can determine the exact value of $H(t)$. By partially observed, we mean that we have information about $H(t)$ from manifest variables but cannot determine the exact value. By not observed, we mean that we cannot directly determine anything about $H(t)$.
 
-\paragraph{Direct observations of housing.} We assume that housing status is fully observed in four settings. First, for all patients at $t=0$ (time of Call Center contact) through the Center's assessment. Second, at the time of death, since $H(t)$ is defined to be $0$ if $D(t)=1$. Third, when a patient is enrolled in GPD, since patients in GPD are considered to be in sheltered homelessness. Fourth, when a patient enters SSVF.
+\paragraph{Direct observations of housing.} We assume that housing status is fully observed in four settings. First, for all patients at $t=0$ (time of Call Center contact) through the Center's assessment. Second, at the time of death, since $D(t)=1$ implies $Y(t) = 0$. Third, when a patient is enrolled in GPD ($X_3(t)=1$), since GPD enrollment implies $H(t) = 0$. Fourth, when a patient enters SSVF ($t = T_A$).
 
 \paragraph{Partial observations of housing.}
-Housing status is partially observed for patients living in HUD-VASH housing. For these patients, they are known to be housed, but we cannot determine their risk status.
+Housing status is partially observed for patients living in HUD-VASH housing ($X_2(t)=1$), which implies $H(t) = 1$.
 
-For patients enrolled in HUD-VASH who are in the process of obtaining HUD-VASH housing, we can determine that they are not stably housed, but we cannot determine whether they are housed with risk of homelessness or homeless during the housing search.
+For patients enrolled in HUD-VASH who are in the process of obtaining HUD-VASH housing ($X_1(t)=1$, $X_2(t)=0$), we know they are not yet stably housed ($H(t) = 0$).
 
-For patients who enrolled in SSVF and exited SSVF prior to follow-up, we can determine whether they exit to unsheltered homelessness, sheltered homelessness, or independent housing, but for the third group we cannot determine whether they are housed with risk of homelessness or stably housed.
-
-Note that stable housing is never directly observed for any patient, since we cannot determine whether a patient is housed with risk of homelessness or stably housed. We can only determine whether a patient is not stably housed (i.e.\ unsheltered homeless, sheltered homeless, or housed with risk of homelessness) or is potentially stably housed (i.e.\ living in HUD-VASH housing or exited SSVF to independent housing).
+For patients who enrolled in SSVF and exited SSVF prior to follow-up, housing status at exit $H(T^Z)$ is assumed observed.
 
 Define indicators $H^{\text{obs}}(t)$ for whether housing status is observed at time $t$ and $Y^{\text{obs}}$ for whether the primary outcome $Y$ is observed at follow-up.
-The observation process for $Y$ is less restrictive than housing since we can determine whether $Y=0$ if we know the patient is deceased or not stably housed, even if we don't know their exact housing status.
+The observation process for $Y$ is less restrictive than for $H$ since we can determine $Y=0$ if we know the patient is deceased or homeless, even if we don't have direct observation of housing.
 
 
 % =============================================================================
@@ -59,15 +57,15 @@ The observation process for $Y$ is less restrictive than housing since we can de
 
 \subsection{Follow-up strata}
 
-Partition patients into strata defined by their vital status and program enrollment at follow-up time $\tau$. Let $C = C(\boldsymbol{L}, \overline{\boldsymbol{X}}(\tau), D(\tau))$ denote stratum membership:
+Partition patients into strata defined by their vital status and program enrollment at follow-up time $T_A + 120$. Let $C = C(\boldsymbol{L}, \overline{\boldsymbol{X}}(T_A + 120), D(T_A + 120))$ denote stratum membership:
 
 \begin{itemize}
-    \item $C = 0$: Deceased ($D(\tau) = 1$)
-    \item $C = 1$: Enrolled in GPD ($D(\tau) = 0$, $X_3(\tau) = 1$)
-    \item $C = 2$: Enrolled in HUD-VASH but not living in HUD-VASH housing, not enrolled in GPD ($D(\tau) = 0$, $X_1(\tau) = 1$, $X_2(\tau) = 0$, $X_3(\tau) = 0$)
-    \item $C = 3$: Living in HUD-VASH housing ($D(\tau) = 0$, $X_2(\tau) = 1$)
-    \item $C = 4$: Not enrolled in any VA homeless program at $\tau$, but enrolled in and exited a VA homeless program between $t = 0$ and $\tau$
-    \item $C = 5$: Never enrolled in any VA homeless program between $t = 0$ and $\tau$
+    \item $C = 0$: Deceased ($D(T_A + 120) = 1$)
+    \item $C = 1$: Enrolled in GPD ($D(T_A + 120) = 0$, $X_3(T_A + 120) = 1$)
+    \item $C = 2$: Enrolled in HUD-VASH but not living in HUD-VASH housing, not enrolled in GPD ($D(T_A + 120) = 0$, $X_1(T_A + 120) = 1$, $X_2(T_A + 120) = 0$, $X_3(T_A + 120) = 0$)
+    \item $C = 3$: Living in HUD-VASH housing ($D(T_A + 120) = 0$, $X_2(T_A + 120) = 1$)
+    \item $C = 4$: Not enrolled in any VA homeless program at $T_A + 120$, but enrolled in and exited a VA homeless program between $t = 0$ and $T_A + 120$
+    \item $C = 5$: Never enrolled in any VA homeless program between $t = 0$ and $T_A + 120$
 \end{itemize}
 
 For $C \in \{0, 1, 2\}$, the primary outcome is determined directly: $Y = 0$. For $C \in \{3, 4, 5\}$, $Y$ must be estimated from manifest variables via the latent variable model.

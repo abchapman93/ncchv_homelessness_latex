@@ -50,6 +50,34 @@ When $V(t) \in \{1, \ldots, 5\}$, a vector of manifest variables $\boldsymbol{M}
 
 Housing status is also directly observed on certain occasions through the structural components of $B(t)$: at baseline ($t = 0$) through the Call Center assessment, at SSVF entry ($t = T_A$), at SSVF exit ($t = T^Z$), when $X_3(t) = 1$ (GPD enrollment implies $H(t) = 0$), and when $X_2(t) = 1$ (HUD-VASH housing implies $H(t) = 1$).
 
+Table~\ref{tab:bt} summarizes the elements of $B(t)$ and their availability by visit type.
+
+\begin{table}[ht]
+\centering
+\caption{Elements of $B(t)$ available by visit type $V(t)$. Structural components ($D$, $A$, $Z$, $\boldsymbol{X}$) are always recorded. Manifest variables $\boldsymbol{M}(t)$ are observed only at visit types 1--5.}
+\label{tab:bt}
+\small
+\begin{tabular}{llcccccc}
+\toprule
+& & \multicolumn{6}{c}{Visit type $V(t)$} \\
+\cmidrule(lr){3-8}
+Component & Element & None & Homeless & HUD-VASH & Risk & MH/SUD & Other \\
+& & (0) & (1) & (2) & (3) & (4--5) & ($\geq 6$) \\
+\midrule
+\multicolumn{8}{l}{\textit{Structural (always recorded)}} \\
+& $D(t)$ & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+& $A(t),\, Z(t)$ & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+& $\boldsymbol{X}(t)$ & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
+\midrule
+\multicolumn{8}{l}{\textit{Manifest variables $\boldsymbol{M}(t)$}} \\
+& $I(t)$: ICD-10 codes & & \checkmark & \checkmark & \checkmark & \checkmark & \\
+& $N(t)$: note count & & \checkmark & \checkmark & \checkmark & \checkmark & \\
+& $N_{\text{stable}},\, N_{\text{unstable}},\, N_{\text{unknown}}$ & & \checkmark & \checkmark & \checkmark & \checkmark & \\
+& $N_{\text{homeless}},\, N_{\text{housed}},\, N_{\text{need}}$ & & \checkmark & \checkmark & \checkmark & \checkmark & \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \paragraph{History notation.}
 For an arbitrary process $W$:
 \begin{itemize}
