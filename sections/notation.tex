@@ -4,14 +4,14 @@
 \paragraph{Time and baseline variables.}
 Let $t = 0, 1, 2, \ldots$ index days since Call Center contact. Baseline covariates measured at $t = 0$ are denoted by $\boldsymbol{L}$.
 
+\paragraph{Mortality.}
+Let $D(t) = 1$ if the patient has died by day $t$ and $D(t) = 0$ otherwise. Mortality is always observed. Let $T^D$ denote the time of death.
+
 \paragraph{Treatment.}
 Let $T_A = \min_s \{s : A(s) = 1\}$ denote the time of SSVF initiation. Define $A(t) = \mathbf{1}[T_A \leq t]$ as the indicator of having initiated SSVF at or by day $t$; once $A(t) = 1$, it remains 1 (absorbing). The grace period treatment indicator is $\Delta_A = \mathbf{1}[T_A \leq 30]$.
 
 \paragraph{Housing status.}
-A patient's housing status $H(t)$ is binary: $H(t) = 1$ if housed and $H(t) = 0$ if homeless. $H(t)$ is only defined for living individuals, i.e., when $D(t) = 0$.
-
-\paragraph{Mortality.}
-Let $D(t) = 1$ if the patient has died by day $t$ and $D(t) = 0$ otherwise. Mortality is always observed. When $D(t) = 1$, $H(t)$ is undefined. Let $T^D$ denote the time of death.
+A patient's housing status $H(t)$ is represented by $H(t) = 1$ if housed and $H(t) = 0$ if homeless. If $D(t)=1$, then $H(t)$ is undefined. Housing status is observed at baseline ($t = 0$) through the Call Center assessment, at SSVF entry ($t = T_A$), and when the patient is enrolled in certain VA homeless programs. 
 
 \paragraph{SSVF exit.}
 Let $Z(t) = 1$ if the patient has initiated and exited SSVF by day $t$, and $Z(t) = 0$ otherwise. $Z(t)$ is binary and absorbing; $Z(t) = 1$ implies $A(t) = 1$. Let $T^Z$ denote the day of SSVF exit. The exit destination is captured by $H(T^Z)$, which is assumed observed.
@@ -22,7 +22,7 @@ Let $\boldsymbol{X}(t)$ represent time-varying covariates:
     \item $X_1(t)$: Indicator that the Veteran is enrolled in HUD-VASH
     \item $X_2(t)$: Indicator that the Veteran is enrolled in HUD-VASH and living in HUD-VASH housing
     \item $X_3(t)$: Indicator that the Veteran is enrolled in GPD or other VA homeless programs
-    \item $X_4(t)$: The individual's VA enrollment status
+    \item $X_4(t)$: The individual's VA healthcare enrollment status
 \end{itemize}
 
 \paragraph{Healthcare visits and data recorded on day $t$.}
@@ -34,18 +34,17 @@ Let $V(t)$ represent the visit type at time $t$:
     \item $V(t) = 3$: Risk visit
     \item $V(t) = 4$: Mental health or substance use visit
     \item $V(t) = 5$: Social work visit
-    \item $V(t) \geq 6$: Other visits (primary care, emergency, etc.)
+    \item $V(t) = 6$: Other visits (primary care, emergency, etc.)
 \end{itemize}
 
 Define $B(t) = \{D(t),\, A(t),\, Z(t),\, \boldsymbol{X}(t),\, V(t),\, \boldsymbol{M}(t)\}$ as the data recorded on day $t$.
 
 \paragraph{Manifest variables.}
-When $V(t) \in \{1, \ldots, 5\}$, a vector of manifest variables $\boldsymbol{M}(t)$ is observed. For $V(t) = 0$ or $V(t) \geq 6$, $\boldsymbol{M}(t) = \emptyset$. The manifest variables contain noisy indicators of housing status extracted from ICD-10 codes and clinical notes:
+When $V(t) \in \{1, \ldots, 5\}$, a vector of manifest variables $\boldsymbol{M}(t) = (M_1(t),\, \boldsymbol{M}_2(t),\, \boldsymbol{M}_3(t))$ is observed. For $V(t) = 0$ or $V(t) = 6$, $\boldsymbol{M}(t) = \emptyset$. The manifest variables contain noisy indicators of housing status extracted from ICD-10 codes and clinical notes:
 \begin{itemize}
-    \item $I(t)$: ICD-10 housing codes. In settings where granular coding is available, $I^G(t) \in \{\text{absent},\, \text{risk},\, \text{homeless},\, \text{sheltered},\, \text{unsheltered}\}$. Otherwise, $I^C(t) \in \{\text{absent},\, \text{present}\}$.
-    \item $N(t)$: Count of clinical notes at the visit.
-    \item $N_{\text{stable}}(t)$, $N_{\text{unstable}}(t)$, $N_{\text{unknown}}(t)$: Notes classified as stably housed, unstably housed, and unknown, respectively, with $N_{\text{stable}}(t) + N_{\text{unstable}}(t) + N_{\text{unknown}}(t) = N(t)$.
-    \item $N_{\text{homeless}}(t)$, $N_{\text{housed}}(t)$, $N_{\text{need}}(t)$: Counts of homeless, housed, and housing need entity spans identified across clinical notes by NLP.
+    \item $M_1(t) \in \{0, 1, 2, 3, 4\}$: ICD-10 housing code, where $0 = \text{absent}$, $1 = \text{risk}$, $2 = \text{homeless unspecified}$, $3 = \text{sheltered}$, $4 = \text{unsheltered}$. At visit types where granular coding is not available, $M_1(t) \in \{0, 2\}$.
+    \item $\boldsymbol{M}_2(t) = [M_{2,1}(t),\, M_{2,2}(t),\, M_{2,3}(t)]$: Counts of clinical notes classified as stably housed, unstably housed, and unknown, respectively, with $M_{2,1}(t) + M_{2,2}(t) + M_{2,3}(t)$ equal to the total number of notes at the visit.
+    \item $\boldsymbol{M}_3(t) = [M_{3,1}(t),\, M_{3,2}(t),\, M_{3,3}(t)]$: Counts of homeless, housing need, and housed entity spans identified across clinical notes by NLP.
 \end{itemize}
 
 Housing status is also directly observed on certain occasions through the structural components of $B(t)$: at baseline ($t = 0$) through the Call Center assessment, at SSVF entry ($t = T_A$), at SSVF exit ($t = T^Z$), when $X_3(t) = 1$ (GPD enrollment implies $H(t) = 0$), and when $X_2(t) = 1$ (HUD-VASH housing implies $H(t) = 1$).
@@ -62,7 +61,7 @@ Table~\ref{tab:bt} summarizes the elements of $B(t)$ and their availability by v
 & & \multicolumn{6}{c}{Visit type $V(t)$} \\
 \cmidrule(lr){3-8}
 Component & Element & None & Homeless & HUD-VASH & Risk & MH/SUD & Other \\
-& & (0) & (1) & (2) & (3) & (4--5) & ($\geq 6$) \\
+& & (0) & (1) & (2) & (3) & (4--5) & (6) \\
 \midrule
 \multicolumn{8}{l}{\textit{Structural (always recorded)}} \\
 & $D(t)$ & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
@@ -70,10 +69,9 @@ Component & Element & None & Homeless & HUD-VASH & Risk & MH/SUD & Other \\
 & $\boldsymbol{X}(t)$ & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark & \checkmark \\
 \midrule
 \multicolumn{8}{l}{\textit{Manifest variables $\boldsymbol{M}(t)$}} \\
-& $I(t)$: ICD-10 codes & & \checkmark & \checkmark & \checkmark & \checkmark & \\
-& $N(t)$: note count & & \checkmark & \checkmark & \checkmark & \checkmark & \\
-& $N_{\text{stable}},\, N_{\text{unstable}},\, N_{\text{unknown}}$ & & \checkmark & \checkmark & \checkmark & \checkmark & \\
-& $N_{\text{homeless}},\, N_{\text{housed}},\, N_{\text{need}}$ & & \checkmark & \checkmark & \checkmark & \checkmark & \\
+& $M_1(t)$: ICD-10 code & & \checkmark & \checkmark & \checkmark & \checkmark & \\
+& $\boldsymbol{M}_2(t)$: note classifications & & \checkmark & \checkmark & \checkmark & \checkmark & \\
+& $\boldsymbol{M}_3(t)$: NLP entity spans & & \checkmark & \checkmark & \checkmark & \checkmark & \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -88,7 +86,7 @@ For an arbitrary process $W$:
 \subsection{Outcome, potential outcomes, and estimand}
 
 \paragraph{Composite outcome.}
-The primary outcome at time $t$ is $Y(t) = (1 - D(t)) \cdot H(t)$, an indicator of being alive and housed. Follow-up is assessed at $T_A + 120$ days after Call Center contact.
+The primary outcome at time $t$ is $Y(t) = (1 - D(t)) \cdot H(t)$, an indicator of being alive and housed. Follow-up is assessed 120 days after SSVF initiation, i.e., at day $T_A + 120$.
 
 \paragraph{Treatment histories.}
 Define $\bar{a}_t = (a_0, a_1, \ldots, a_t)$ as the treatment history through day $t$. Since $A(t)$ is absorbing, initiating SSVF on day $s$ corresponds to the treatment history $\bar{1}_s = (0, \ldots, 0, 1, \ldots, 1)$ with the switch from 0 to 1 at position $s$. The no-treatment history is $\bar{0} = (0, \ldots, 0)$. For notational convenience, define $\bar{0}_s \equiv \bar{0}$ for all $s$, $0 \leq s \leq 30$.
