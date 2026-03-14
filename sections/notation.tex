@@ -105,10 +105,8 @@ Define potential outcomes indexed by treatment history:
 Under consistency, $Y^{\bar{1}_{T_A}}(t) = Y(t)$ for treated patients.
 
 \paragraph{Estimand.}
-The estimand is the average treatment effect among the treated (ATT):
+The estimand is the average treatment effect among the treated (ATT) conditional on initiation time is:
 \begin{align*}
-    \delta = E\!\left[Y(T_A + 120) - Y^{\bar{0}}(T_A + 120) \mid \Delta_A = 1\right]
+    \delta(T_A) = E\!\left[Y(T_A + 120) - Y^{\bar{0}}(T_A + 120) \mid \Delta_A = 1\right]
 \end{align*}
 
-
-Testing.
